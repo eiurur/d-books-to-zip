@@ -9,8 +9,6 @@ modules.forEach((url) => {
   document.getElementsByTagName('head')[0].appendChild(script);
 });
 
-console.log('content.js');
-
 const capture = (currentPage) => {
   return new Promise((resolve) => {
     const filename = `${currentPage}.jpg`;
@@ -52,7 +50,6 @@ const goToNextPage = () => {
   e.initEvent('wheel', true, true);
   e.deltaY = 800;
   screen.dispatchEvent(e);
-  console.log(screen);
 };
 const sleep = (msec) => new Promise((resolve) => setTimeout(resolve, msec));
 
