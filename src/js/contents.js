@@ -36,14 +36,20 @@ const download = async (captures) => {
   saveAs(zipBlob, zipName);
   window.URL.revokeObjectURL(zipUrl);
 };
-
 const goToNextPage = () => {
   const screen = document.querySelector('.currentScreen');
+  screen.click();
   const e = document.createEvent('MouseEvents');
   e.initEvent('wheel', true, true);
   e.deltaY = +800;
   screen.dispatchEvent(e);
   console.log(screen);
+
+  // return new Promise((resolve) => {
+  //   chrome.runtime.sendMessage('goToNextPage', (receive) => {
+  //     resolve(receive);
+  //   });
+  // });
 };
 const sleep = (msec) => new Promise((resolve) => setTimeout(resolve, msec));
 
@@ -56,7 +62,7 @@ const sleep = (msec) => new Promise((resolve) => setTimeout(resolve, msec));
     console.log(i);
     await sleep(1000);
     captures.push(await capture(i));
-    goToNextPage();
+    await goToNextPage();
     await sleep(2000);
   }
   console.log('END', captures);
