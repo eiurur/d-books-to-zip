@@ -1,7 +1,7 @@
 javascript: !(function (undefined) {
   const INTERVAL_MS = 1500;
 
-  const loadModules = () => {
+  const loadScripts = () => {
     const modules = [
       'https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js',
       'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
@@ -37,12 +37,6 @@ javascript: !(function (undefined) {
     });
   };
 
-  const zipGenerateAsync = (zip) => {
-    return new Promise((resolve, reject) => {
-      zip.generateAsync({ type: 'blob' }).then(resolve);
-    });
-  };
-
   const createZipBlob = async (images) => {
     const zip = new JSZip();
 
@@ -50,14 +44,14 @@ javascript: !(function (undefined) {
       zip.file(image.filename, image.blob, { binary: true });
     });
 
-    return await zipGenerateAsync(zip);
+    return await zip.generateAsync({ type: 'blob' });
   };
 
-  const download = async (captures) => {
+  const downloadZip = async (captures) => {
     const zipBlob = await createZipBlob(captures);
     const bookTitle = document.title;
     const zipName = `${bookTitle}.zip`;
-    await saveAs(zipBlob, zipName);
+    saveAs(zipBlob, zipName);
   };
 
   const goToNextPage = () => {
@@ -75,7 +69,8 @@ javascript: !(function (undefined) {
 
   (async () => {
     loadCSS();
-    loadModules();
+    loadScripts();
+    await sleep(1000); // HACKME
 
     const notyf = new Notyf({
       position: { x: 'left', y: 'bottom' },
@@ -97,9 +92,8 @@ javascript: !(function (undefined) {
     }
 
     console.log('END', captures);
-    notyf.success('キャプチャ完了。ZIP変換開始。');
+    notyf.success('キャプチャ完了。ZIPのダウンロードを開始。');
 
-    await download(captures);
-    notyf.success('ZIPダウンロード完了。');
+    await downloadZip(captures);
   })();
 })();
